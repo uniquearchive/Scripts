@@ -1,3 +1,19 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Clothing Finder " .. Fluent.Version,
+    SubTitle = "by YourName",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark"
+})
+
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "shirt" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
 local clothingIDs = {
     "13085933663", "16027104477", "97760987071166", 
     "4871915190", "13469431113", "13117322111",
@@ -7,57 +23,139 @@ local clothingIDs = {
     "126118133870839", "12142425449", "11761300406"
 }
 
-print("=== НАЧАЛО ПРОВЕРКИ ===")
-local clothingFolder = workspace:FindFirstChild("Clothing")
-if not clothingFolder then
-    warn("❌ ОШИБКА: Папка Clothing не найдена!")
-    return
-end
+local markers = {}
+local highlights = {}
 
 local function createMarker(item, text, color)
+    local adornee = item.Parent:FindFirstChild("Torso") or 
+                   item.Parent:FindFirstChild("UpperTorso") or
+                   item.Parent:FindFirstChild("Right Leg") or
+                   item
+    
+    if not adornee then return end
+    
+    -- Создаем Highlight
+    local highlight = Instance.new("Highlight")
+    highlight.FillColor = color
+    highlight.OutlineColor = color
+    highlight.Parent = item
+    table.insert(highlights, highlight)
+    
+    -- Создаем BillboardGui
     local gui = Instance.new("BillboardGui")
-    if item.Parent:FindFirstChild("Torso") then
-         gui.Adornee = item.Parent.Torso
-    elseif item.Parent:FindFirstChild("Right Leg") then
-        gui.Adornee = item.Parent:FindFirstChild("Right Leg")
-    end
-    gui.Size = UDim2.new(4, 0, 1, 0)
+    gui.Name = "ClothingMarker"
+    gui.Adornee = adornee
+    gui.Size = UDim2.new(6, 0, 2, 0)
     gui.StudsOffset = Vector3.new(0, 3, 0)
+    gui.AlwaysOnTop = true
+    gui.Parent = adornee
     
     local label = Instance.new("TextLabel")
-    label.Text = "ITEM"
+    label.Text = text
     label.Size = UDim2.new(1, 0, 1, 0)
     label.BackgroundTransparency = 1
-    label.TextColor3 = Color3.new(1, 0, 0)
+    label.TextColor3 = color
     label.TextScaled = true
+    label.Font = Enum.Font.SourceSansBold
     label.Parent = gui
-
-    if item.Parent:FindFirstChild("Torso") then
-         gui.Parent = item.Parent.Torso
-    elseif item.Parent:FindFirstChild("Right Leg") then
-        gui.Parent = item.Parent:FindFirstChild("Right Leg")
-    end
+    
+    table.insert(markers, gui)
+    return gui
 end
 
-local found = 0
-for _,id in ipairs(clothingIDs) do
-    local template = "rbxassetid://"..id
-    print("\n🔍 Проверка ID:", id)
-    
-    for _,item in ipairs(clothingFolder:GetDescendants()) do
-        if item:IsA("Shirt") and item.ShirtTemplate == template then
-            print("✔ Рубашка найдена:", item:GetFullName())
-            createMarker(item, "SHIRT: "..id, Color3.new(1,0,0))
-            found += 1
-        elseif item:IsA("Pants") and item.PantsTemplate == template then
-            print("✔ Штаны найдены:", item:GetFullName())
-            createMarker(item, "PANTS: "..id, Color3.new(0,1,0))
-            found += 1
+local function clearAllMarkers()
+    for _, marker in ipairs(markers) do
+        marker:Destroy()
+    end
+    for _, highlight in ipairs(highlights) do
+        highlight:Destroy()
+    end
+    markers = {}
+    highlights = {}
+end
+
+Tabs.Main:AddButton({
+    Title = "Найти одежду",
+    Description = "Поиск по всем ID в папке Clothing",
+    Callback = function()
+        clearAllMarkers()
+        
+        local clothingFolder = workspace:FindFirstChild("Clothing")
+        if not clothingFolder then
+            Fluent:Notify({
+                Title = "Ошибка",
+                Content = "Папка Clothing не найдена!",
+                Duration = 5
+            })
+            return
+        end
+        
+        local found = 0
+        
+        for _, id in ipairs(clothingIDs) do
+            local template = "rbxassetid://"..id
+            
+            for _, item in ipairs(clothingFolder:GetDescendants()) do
+                if item:IsA("Shirt") and item.ShirtTemplate == template then
+                    createMarker(item, "SHIRT: "..id, Color3.new(1, 0, 0))
+                    found += 1
+                elseif item:IsA("Pants") and item.PantsTemplate == template then
+                    createMarker(item, "PANTS: "..id, Color3.new(0, 1, 0))
+                    found += 1
+                end
+            end
+        end
+        
+        if found > 0 then
+            Fluent:Notify({
+                Title = "Успех",
+                Content = "Найдено элементов: "..found,
+                Duration = 5
+            })
+        else
+            Fluent:Notify({
+                Title = "Результат",
+                Content = "Совпадений не найдено!",
+                Duration = 5
+            })
         end
     end
-end
+})
 
-print("\n=== РЕЗУЛЬТАТ ===")
-print("Проверено ID:", #clothingIDs)
-print("Найдено элементов:", found)
-if found == 0 then warn("❌ Совпадений не найдено!") end
+Tabs.Main:AddButton({
+    Title = "Очистить маркеры",
+    Description = "Удаляет все созданные маркеры",
+    Callback = function()
+        clearAllMarkers()
+        Fluent:Notify({
+            Title = "Успех",
+            Content = "Все маркеры удалены",
+            Duration = 3
+        })
+    end
+})
+
+-- Добавим возможность ввода своих ID
+local Input = Tabs.Main:AddInput("CustomID", {
+    Title = "Добавить ID",
+    Placeholder = "Введите ID одежды",
+    Numeric = true,
+    Finished = true,
+    Callback = function(Value)
+        if Value and Value ~= "" then
+            table.insert(clothingIDs, Value)
+            Fluent:Notify({
+                Title = "Успех",
+                Content = "ID добавлен: "..Value,
+                Duration = 3
+            })
+        end
+    end
+})
+
+Window:SelectTab(1)
+Fluent:Notify({
+    Title = "Clothing Finder",
+    Content = "Скрипт успешно загружен",
+    Duration = 5
+})
