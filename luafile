@@ -21,17 +21,22 @@ local function createMarker(item, text, color)
     elseif item.Parent:FindFirstChild("Right Leg") then
         gui.Adornee = item.Parent:FindFirstChild("Right Leg")
     end
-    gui.Size = UDim2.new(6,0,2,0)
-    gui.StudsOffset = Vector3.new(0,2,0)
-    gui.Parent = item
+    gui.Size = UDim2.new(4, 0, 1, 0)
+    gui.StudsOffset = Vector3.new(0, 3, 0)
     
     local label = Instance.new("TextLabel")
-    label.Text = text
-    label.Size = UDim2.new(1,0,1,0)
+    label.Text = "ITEM"
+    label.Size = UDim2.new(1, 0, 1, 0)
     label.BackgroundTransparency = 1
-    label.TextColor3 = color
+    label.TextColor3 = Color3.new(1, 0, 0)
     label.TextScaled = true
     label.Parent = gui
+
+    if item.Parent:FindFirstChild("Torso") then
+         gui.Parent = item.Parent.Torso
+    elseif item.Parent:FindFirstChild("Right Leg") then
+        gui.Parent = item.Parent:FindFirstChild("Right Leg")
+    end
 end
 
 local found = 0
