@@ -95,8 +95,10 @@ local PerformanceMode = false
 local originalMaterials = {}
 local foundPlayerItems = {}
 
--- Функция для создания красивого маркера
 local function createClothingMarker(item, info)
+    -- Проверяем обязательные поля
+    if not item or not item.Parent then return end
+    
     local adornee = item.Parent:FindFirstChild("Torso") or 
                    item.Parent:FindFirstChild("UpperTorso") or
                    item.Parent:FindFirstChild("HumanoidRootPart") or
@@ -104,7 +106,13 @@ local function createClothingMarker(item, info)
 
     if not adornee then return end
 
-    -- Создаем Highlight
+    -- Устанавливаем значения по умолчанию
+    local itemName = info.name or info.type or "Предмет"
+    local itemId = info.id or "N/A"
+    local rarity = info.rarity or "Обычный"
+    local itemType = info.type and info.type:lower() or "shirt"
+
+    -- Highlight
     local highlight = Instance.new("Highlight")
     highlight.Name = "ClothingHighlight"
     highlight.FillColor = Color3.fromRGB(0, 150, 255)
@@ -113,7 +121,7 @@ local function createClothingMarker(item, info)
     highlight.OutlineTransparency = 0
     highlight.Parent = item
 
-    -- Создаем красивый BillboardGui
+    -- BillboardGui
     local gui = Instance.new("BillboardGui")
     gui.Name = "ClothingMarker"
     gui.Adornee = adornee
@@ -135,9 +143,9 @@ local function createClothingMarker(item, info)
     corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = frame
 
-    -- Заголовок с названием
+    -- Заголовок
     local title = Instance.new("TextLabel")
-    title.Text = info.name
+    title.Text = itemName
     title.Size = UDim2.new(1, -10, 0.4, 0)
     title.Position = UDim2.new(0, 5, 0, 5)
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -149,7 +157,7 @@ local function createClothingMarker(item, info)
 
     -- Детали
     local details = Instance.new("TextLabel")
-    details.Text = string.format("ID: %s | %s", info.id, info.rarity)
+    details.Text = string.format("ID: %s | %s", itemId, rarity)
     details.Size = UDim2.new(1, -10, 0.3, 0)
     details.Position = UDim2.new(0, 5, 0.4, 0)
     details.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -164,7 +172,7 @@ local function createClothingMarker(item, info)
     typeIcon.Size = UDim2.new(0.1, 0, 0.3, 0)
     typeIcon.Position = UDim2.new(0.9, -5, 0.65, 0)
     typeIcon.BackgroundTransparency = 1
-    typeIcon.Image = info.type == "Shirt" and "rbxassetid://10734951510" or "rbxassetid://10734951713"
+    typeIcon.Image = itemType == "shirt" and "rbxassetid://10734951510" or "rbxassetid://10734951713"
     typeIcon.Parent = frame
 
     return {highlight = highlight, gui = gui}
@@ -274,11 +282,25 @@ local function scanPlayersClothing()
                     Title = "Пометить",
                     Callback = function()
                         for _, item in ipairs(foundPlayerItems) do
-                            if item.object and item.object.Parent then
-                                createClothingMarker(item.object, item)
+                            -- Добавляем проверку и значения по умолчанию
+                            local itemInfo = {
+                                object = item.object,
+                                id = item.id or 0,
+                                type = item.type or "shirt",
+                                rarity = item.rarity or "Unknown",
+                                name = item.type or "Item" -- Используем тип как имя, если имя не указано
+                            }
+                            
+                            if itemInfo.object and itemInfo.object.Parent then
+                                createClothingMarker(itemInfo.object, itemInfo)
                             end
                         end
-                    end
+                        Fluent:Notify({
+                            Title = "Готово",
+                            Content = "Предметы помечены",
+                            Duration = 3
+                        })
+                        end
                 },
                 {
                     Title = "Закрыть",
