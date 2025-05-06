@@ -1,73 +1,54 @@
 local clothingIDs = {
-     "13085933663", "16027104477", "97760987071166", 
-    "97760987071166", "4871915190", -- Новые ID для штанов
-    "13469431113", "13117322111", "13686174169", -- Старые ID
-    "18698179940", "3716494426", "11849088400",
-    "7896098117", "8509230330", "4615028029",
-    "7675755130", "6844713210", "126118133870839"
+    "13085933663", "16027104477", "97760987071166", 
+    "4871915190", "13469431113", "13117322111",
+    "13686174169", "18698179940", "3716494426",
+    "11849088400", "7896098117", "8509230330",
+    "4615028029", "7675755130", "6844713210",
+    "126118133870839"
 }
 
 print("=== НАЧАЛО ПРОВЕРКИ ===")
 local clothingFolder = workspace:FindFirstChild("Clothing")
 if not clothingFolder then
-    warn("❌ ОШИБКА: Папка Clothing не найдена в Workspace!")
-    print("Убедитесь, что в Workspace существует папка с именем 'Clothing'")
+    warn("❌ ОШИБКА: Папка Clothing не найдена!")
     return
 end
-print("✔ Папка Clothing найдена")
 
-local foundItems = 0
-
-for _, id in ipairs(clothingIDs) do
-    print("\n🔍 Проверяем ID:", id)
-    local template = "rbxassetid://"..id
-    local itemsChecked = 0
-    
-    for _, item in ipairs(clothingFolder:GetDescendants()) do
-        itemsChecked = itemsChecked + 1
-        
-        if item:IsA("Shirt") then
-            if item.ShirtTemplate == template then
-                print("✔ Найдена рубашка:", item:GetFullName())
-                createMarker(item, "SHIRT: "..id, Color3.new(1, 0, 0))
-                foundItems = foundItems + 1
-            end
-        elseif item:IsA("Pants") then
-            if item.PantsTemplate == template then
-                print("✔ Найдены штаны:", item:GetFullName())
-                createMarker(item, "PANTS: "..id, Color3.new(0, 1, 0))
-                foundItems = foundItems + 1
-            end
-        end
-    end
-    
-    print("Проверено объектов для ID "..id..":", itemsChecked)
-end
-
-print("\n=== ИТОГИ ===")
-print("Всего проверено ID:", #clothingIDs)
-print("Найдено совпадений:", foundItems)
-if foundItems == 0 then
-    warn("❌ Не найдено ни одного элемента одежды!")
-    print("Возможные причины:")
-    print("- Указаны неверные ID")
-    print("- Одежда находится в другой папке")
-    print("- Одежда еще не загружена")
-end
-
-function createMarker(item, text, color)
+local function createMarker(item, text, color)
     local gui = Instance.new("BillboardGui")
     gui.Adornee = item
-    gui.Size = UDim2.new(6, 0, 2, 0)
-    gui.StudsOffset = Vector3.new(0, 2, 0)
+    gui.Size = UDim2.new(6,0,2,0)
+    gui.StudsOffset = Vector3.new(0,2,0)
     gui.Parent = item
     
     local label = Instance.new("TextLabel")
     label.Text = text
-    label.Size = UDim2.new(1, 0, 1, 0)
+    label.Size = UDim2.new(1,0,1,0)
     label.BackgroundTransparency = 1
     label.TextColor3 = color
     label.TextScaled = true
-    label.Font = Enum.Font.SourceSansBold
     label.Parent = gui
 end
+
+local found = 0
+for _,id in ipairs(clothingIDs) do
+    local template = "rbxassetid://"..id
+    print("\n🔍 Проверка ID:", id)
+    
+    for _,item in ipairs(clothingFolder:GetDescendants()) do
+        if item:IsA("Shirt") and item.ShirtTemplate == template then
+            print("✔ Рубашка найдена:", item:GetFullName())
+            createMarker(item, "SHIRT: "..id, Color3.new(1,0,0))
+            found += 1
+        elseif item:IsA("Pants") and item.PantsTemplate == template then
+            print("✔ Штаны найдены:", item:GetFullName())
+            createMarker(item, "PANTS: "..id, Color3.new(0,1,0))
+            found += 1
+        end
+    end
+end
+
+print("\n=== РЕЗУЛЬТАТ ===")
+print("Проверено ID:", #clothingIDs)
+print("Найдено элементов:", found)
+if found == 0 then warn("❌ Совпадений не найдено!") end
