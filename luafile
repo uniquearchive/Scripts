@@ -11,6 +11,7 @@ local Window = Fluent:CreateWindow({
 
 local Tabs = {
     Main = Window:AddTab({Title = "Поиск одежды", Icon = "shirt"}),
+    Players = Window:AddTab({Title = "Поиск у игроков", Icon = "users"}),
     Settings = Window:AddTab({Title = "Настройки", Icon = "settings"})
 }
 
@@ -92,6 +93,7 @@ local clothingItems = {
 local NoclipEnabled = false
 local PerformanceMode = false
 local originalMaterials = {}
+local foundPlayerItems = {}
 
 -- Функция для создания красивого маркера
 local function createClothingMarker(item, info)
@@ -217,6 +219,82 @@ local function findClothingItems()
     })
 end
 
+-- Поиск редкой одежды у игроков
+local function scanPlayersClothing()
+    clearAllMarkers()
+    foundPlayerItems = {}
+    
+    local players = game:GetService("Players"):GetPlayers()
+    local totalScanned = 0
+    local rareItemsFound = 0
+    
+    for _, player in ipairs(players) do
+        local clothingFolder = player:FindFirstChild("Clothing")
+        if clothingFolder then
+            for _, descendant in ipairs(clothingFolder:GetDescendants()) do
+                if descendant:IsA("StringValue") and 
+                   (descendant.Value == "Epic" or descendant.Value == "Legendary" or descendant.Value == "Ultimate") then
+                    
+                    local parent = descendant.Parent
+                    local idValue = parent:FindFirstChild("id")
+                    local typeValue = parent:FindFirstChild("Type")
+                    
+                    if idValue and idValue:IsA("IntValue") and typeValue and typeValue:IsA("StringValue") then
+                        if typeValue.Value:lower() == "shirt" or typeValue.Value:lower() == "pants" then
+                            local itemInfo = {
+                                playerName = player.Name,
+                                rarity = descendant.Value,
+                                id = idValue.Value,
+                                type = typeValue.Value,
+                                object = parent
+                            }
+                            table.insert(foundPlayerItems, itemInfo)
+                            rareItemsFound = rareItemsFound + 1
+                        end
+                    end
+                end
+            end
+            totalScanned = totalScanned + 1
+        end
+    end
+    
+    -- Показываем результаты
+    if #foundPlayerItems > 0 then
+        local message = string.format("Найдено %d редких предметов у %d игроков:", rareItemsFound, totalScanned)
+        for i, item in ipairs(foundPlayerItems) do
+            message = message .. string.format("\n%d. %s: %s (ID: %d) - %s", 
+                i, item.playerName, item.type, item.id, item.rarity)
+        end
+        
+        Window:Dialog({
+            Title = "Результаты поиска",
+            Content = message,
+            Buttons = {
+                {
+                    Title = "Пометить",
+                    Callback = function()
+                        for _, item in ipairs(foundPlayerItems) do
+                            if item.object and item.object.Parent then
+                                createClothingMarker(item.object, item)
+                            end
+                        end
+                    end
+                },
+                {
+                    Title = "Закрыть",
+                    Callback = function() end
+                }
+            }
+        })
+    else
+        Fluent:Notify({
+            Title = "Поиск завершен",
+            Content = string.format("Проверено %d игроков. Редких предметов не найдено.", totalScanned),
+            Duration = 5
+        })
+    end
+end
+
 -- Функции для режимов
 local function toggleNoclip(value)
     NoclipEnabled = value
@@ -264,6 +342,12 @@ Tabs.Main:AddButton({
     Title = "Очистить маркеры",
     Description = "Удаляет все созданные маркеры и подсветки",
     Callback = clearAllMarkers
+})
+
+Tabs.Players:AddButton({
+    Title = "Сканировать игроков",
+    Description = "Поиск редкой одежды у всех игроков",
+    Callback = scanPlayersClothing
 })
 
 Tabs.Settings:AddToggle("NoclipToggle", {
