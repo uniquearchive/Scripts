@@ -329,6 +329,31 @@ local function scanPlayersClothing()
                     end
                 },
                 {
+            Title = "Копировать список",
+            Callback = function()
+                -- Формируем текст для копирования
+                local copyText = string.format("Найдено %d редких предметов у %d игроков:\n", rareItemsFound, totalScanned)
+                for i, item in ipairs(foundItems) do
+                    copyText = copyText .. string.format("%d. %s: %s (ID: %d) - %s\n", 
+                        i, item.playerName, item.type, item.id, item.rarity)
+                end
+                
+                if setclipboard(copyText) then
+                    Fluent:Notify({
+                        Title = "Скопировано",
+                        Content = "Список предметов скопирован в буфер обмена",
+                        Duration = 3
+                    })
+                else
+                    Fluent:Notify({
+                        Title = "Ошибка",
+                        Content = "Не удалось скопировать в буфер обмена",
+                        Duration = 3
+                    })
+                    end
+                end
+                },
+                {
                     Title = "Закрыть",
                     Callback = function() end
                 }
