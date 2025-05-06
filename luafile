@@ -96,7 +96,6 @@ local originalMaterials = {}
 local foundPlayerItems = {}
 
 local function createClothingMarker(item, info)
-    -- Проверяем обязательные поля
     if not item or not item.Parent then return end
     
     local adornee = item.Parent:FindFirstChild("Torso") or 
@@ -112,16 +111,7 @@ local function createClothingMarker(item, info)
     local rarity = info.rarity or "Обычный"
     local itemType = info.type and info.type:lower() or "shirt"
 
-    -- Highlight
-    local highlight = Instance.new("Highlight")
-    highlight.Name = "ClothingHighlight"
-    highlight.FillColor = Color3.fromRGB(0, 150, 255)
-    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-    highlight.FillTransparency = 0.6
-    highlight.OutlineTransparency = 0
-    highlight.Parent = item
-
-    -- BillboardGui
+    -- Создаем только BillboardGui
     local gui = Instance.new("BillboardGui")
     gui.Name = "ClothingMarker"
     gui.Adornee = adornee
@@ -175,16 +165,49 @@ local function createClothingMarker(item, info)
     typeIcon.Image = itemType == "shirt" and "rbxassetid://10734951510" or "rbxassetid://10734951713"
     typeIcon.Parent = frame
 
-    return {highlight = highlight, gui = gui}
+    return gui
 end
 
 -- Функция для очистки всех маркеров
 local function clearAllMarkers()
     for _, item in ipairs(workspace:GetDescendants()) do
-        if item.Name == "ClothingHighlight" or item.Name == "ClothingMarker" then
+        if item.Name == "ClothingMarker" then
             item:Destroy()
         end
     end
+end
+
+-- Функция проверки существования ID в таблице
+local function isIdExists(id)
+    for _, item in ipairs(clothingItems) do
+        if tostring(item.id) == tostring(id) then
+            return true
+        end
+    end
+    return false
+end
+
+-- Функция добавления предметов в таблицу
+local function addToClothingTable(itemsToAdd)
+    local addedCount = 0
+    
+    for _, newItem in ipairs(itemsToAdd) do
+        -- Проверяем, существует ли уже такой ID
+        if not isIdExists(newItem.id) then
+            -- Создаем запись с значениями по умолчанию
+            local itemToAdd = {
+                id = newItem.id or 0,
+                name = newItem.type or "Item", -- Используем тип как имя по умолчанию
+                type = newItem.type and newItem.type:lower() or "shirt",
+                rarity = newItem.rarity or "Unknown"
+            }
+            
+            table.insert(clothingItems, itemToAdd)
+            addedCount = addedCount + 1
+        end
+    end
+    
+    return addedCount
 end
 
 -- Функция поиска одежды
@@ -227,10 +250,10 @@ local function findClothingItems()
     })
 end
 
--- Поиск редкой одежды у игроков
+-- Модифицированная функция поиска у игроков
 local function scanPlayersClothing()
     clearAllMarkers()
-    foundPlayerItems = {}
+    local foundItems = {} -- Временная таблица для найденных предметов
     
     local players = game:GetService("Players"):GetPlayers()
     local totalScanned = 0
@@ -256,7 +279,7 @@ local function scanPlayersClothing()
                                 type = typeValue.Value,
                                 object = parent
                             }
-                            table.insert(foundPlayerItems, itemInfo)
+                            table.insert(foundItems, itemInfo)
                             rareItemsFound = rareItemsFound + 1
                         end
                     end
@@ -267,9 +290,9 @@ local function scanPlayersClothing()
     end
     
     -- Показываем результаты
-    if #foundPlayerItems > 0 then
+    if #foundItems > 0 then
         local message = string.format("Найдено %d редких предметов у %d игроков:", rareItemsFound, totalScanned)
-        for i, item in ipairs(foundPlayerItems) do
+        for i, item in ipairs(foundItems) do
             message = message .. string.format("\n%d. %s: %s (ID: %d) - %s", 
                 i, item.playerName, item.type, item.id, item.rarity)
         end
@@ -279,20 +302,23 @@ local function scanPlayersClothing()
             Content = message,
             Buttons = {
                 {
-                    Title = "Пометить",
+                    Title = "Добавить в базу",
                     Callback = function()
-                        for _, item in ipairs(foundPlayerItems) do
-                            -- Добавляем проверку и значения по умолчанию
-                            local itemInfo = {
-                                object = item.object,
-                                id = item.id or 0,
-                                type = item.type or "shirt",
-                                rarity = item.rarity or "Unknown",
-                                name = item.type or "Item" -- Используем тип как имя, если имя не указано
-                            }
-                            
-                            if itemInfo.object and itemInfo.object.Parent then
-                                createClothingMarker(itemInfo.object, itemInfo)
+                        local added = addToClothingTable(foundItems)
+                        Fluent:Notify({
+                            Title = "База обновлена",
+                            Content = string.format("Добавлено %d новых предметов", added),
+                            SubContent = string.format("Пропущено %d дубликатов", #foundItems - added),
+                            Duration = 5
+                        })
+                    end
+                },
+                {
+                    Title = "Пометить предметы",
+                    Callback = function()
+                        for _, item in ipairs(foundItems) do
+                            if item.object and item.object.Parent then
+                                createClothingMarker(item.object, item)
                             end
                         end
                         Fluent:Notify({
@@ -300,7 +326,7 @@ local function scanPlayersClothing()
                             Content = "Предметы помечены",
                             Duration = 3
                         })
-                        end
+                    end
                 },
                 {
                     Title = "Закрыть",
@@ -316,6 +342,7 @@ local function scanPlayersClothing()
         })
     end
 end
+
 
 -- Функции для режимов
 local function toggleNoclip(value)
