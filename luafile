@@ -1,161 +1,300 @@
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Clothing Finder " .. Fluent.Version,
-    SubTitle = "by YourName",
+    Title = "Advanced Clothing Finder",
+    SubTitle = "v2.0 | Полная база предметов",
     TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
+    Size = UDim2.fromOffset(650, 500),
     Acrylic = true,
     Theme = "Dark"
 })
 
 local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "shirt" }),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+    Main = Window:AddTab({Title = "Поиск одежды", Icon = "shirt"}),
+    Settings = Window:AddTab({Title = "Настройки", Icon = "settings"})
 }
 
-local clothingIDs = {
-    "13085933663", "16027104477", "97760987071166", 
-    "4871915190", "13469431113", "13117322111",
-    "13686174169", "18698179940", "3716494426",
-    "11849088400", "7896098117", "8509230330",
-    "4615028029", "7675755130", "6844713210",
-    "126118133870839", "12142425449", "11761300406"
+-- Полная таблица всех предметов
+local clothingItems = {
+    -- Штаны
+    {id = "13085933663", name = "Черные штаны", rarity = "Rare", type = "Pants"},
+    {id = "16027104477", name = "Серые штаны", rarity = "Rare", type = "Pants"},
+    {id = "97760987071166", name = "Синие штаны", rarity = "Rare", type = "Pants"},
+    {id = "4871915190", name = "Красные штаны", rarity = "Rare", type = "Pants"},
+
+    -- Рубашки (основные)
+    {id = "5081906790", name = "Бирюзовая рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "129264610471514", name = "Рубашка с молнией", rarity = "Rare", type = "Shirt"},
+    {id = "8509230323", name = "Пуховик", rarity = "Rare", type = "Shirt"},
+    {id = "6492846709", name = "Белая рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "13122216162", name = "Голубая рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "13783114726", name = "Синяя рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "8195412170", name = "Черная рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "13779106850", name = "Серая рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "13469431089", name = "Оранжевая рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "13118233790", name = "Зеленая рубашка с молнией", rarity = "Rare", type = "Shirt"},
+    {id = "12779513863", name = "Белая рубашка с тату", rarity = "Rare", type = "Shirt"},
+    {id = "13023747652", name = "Серая рубашка [2]", rarity = "Rare", type = "Shirt"},
+    {id = "13214898748", name = "Красная рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "13214910323", name = "Белая рубашка [2]", rarity = "Rare", type = "Shirt"},
+    {id = "14160465716", name = "Зеленая рубашка с тату", rarity = "Rare", type = "Shirt"},
+    {id = "13399301724", name = "Красная рубашка [2]", rarity = "Rare", type = "Shirt"},
+    {id = "7791541966", name = "Красный пуховик", rarity = "Rare", type = "Shirt"},
+    {id = "9468365501", name = "Черно-белая рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "13118563657", name = "Зеленая рубашка [2]", rarity = "Rare", type = "Shirt"},
+    {id = "11231715489", name = "Серая рубашка [3]", rarity = "Rare", type = "Shirt"},
+    {id = "14479226476", name = "Серо-зеленая рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "7713824524", name = "Черно-белая рубашка [2]", rarity = "Rare", type = "Shirt"},
+    {id = "14217806745", name = "Черная рубашка [2]", rarity = "Rare", type = "Shirt"},
+    {id = "15373236991", name = "Черная цветная рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "12849806373", name = "Черная рубашка [3]", rarity = "Rare", type = "Shirt"},
+    {id = "13117322084", name = "Зеленая рубашка [3]", rarity = "Rare", type = "Shirt"},
+    {id = "11235784172", name = "Черная рубашка с тату", rarity = "Rare", type = "Shirt"},
+    {id = "13121694218", name = "Синяя рубашка [2]", rarity = "Rare", type = "Shirt"},
+    {id = "6406870851", name = "Красно-черный пуховик", rarity = "Rare", type = "Shirt"},
+    {id = "11624442164", name = "Черная цветная [2]", rarity = "Rare", type = "Shirt"},
+    {id = "5219845970", name = "Красная рубашка с тату", rarity = "Rare", type = "Shirt"},
+    {id = "15393383449", name = "Черно-белая рубашка [3]", rarity = "Rare", type = "Shirt"},
+    {id = "10774950203", name = "Черная рубашка с тату [2]", rarity = "Rare", type = "Shirt"},
+    {id = "13686174145", name = "Бирюзовая рубашка с тату", rarity = "Rare", type = "Shirt"},
+    {id = "6434833814", name = "Черный пуховик", rarity = "Rare", type = "Shirt"},
+    {id = "14617460767", name = "Синяя рубашка [3]", rarity = "Rare", type = "Shirt"},
+    {id = "13634019459", name = "Серая рубашка [4]", rarity = "Rare", type = "Shirt"},
+    {id = "16310782401", name = "Красно-белая рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "15092420573", name = "Черная цветная [3]", rarity = "Rare", type = "Shirt"},
+    {id = "8286855177", name = "Серая рубашка Bape", rarity = "Rare", type = "Shirt"},
+    {id = "14045339941", name = "Серая рубашка [5]", rarity = "Rare", type = "Shirt"},
+    {id = "11849088376", name = "Черная рубашка [4]", rarity = "Rare", type = "Shirt"},
+    {id = "14610851449", name = "Черная рубашка [5]", rarity = "Rare", type = "Shirt"},
+    {id = "4977533353", name = "Черная рубашка [6]", rarity = "Rare", type = "Shirt"},
+    {id = "14387015395", name = "Черная рубашка [7]", rarity = "Rare", type = "Shirt"},
+    {id = "7172768240", name = "Черная рубашка [8]", rarity = "Rare", type = "Shirt"},
+    {id = "11399187381", name = "Бирюзовая рубашка с тату [2]", rarity = "Rare", type = "Shirt"},
+    {id = "78478646034235", name = "Бело-красная рубашка", rarity = "Rare", type = "Shirt"},
+    {id = "9966500982", name = "Серая рубашка [6]", rarity = "Rare", type = "Shirt"},
+
+    -- Дополнительные старые ID
+    {id = "13469431113", name = "Рубашка 1", rarity = "Rare", type = "Shirt"},
+    {id = "13117322111", name = "Рубашка 2", rarity = "Rare", type = "Shirt"},
+    {id = "13686174169", name = "Рубашка 3", rarity = "Rare", type = "Shirt"},
+    {id = "18698179940", name = "Рубашка 4", rarity = "Rare", type = "Shirt"},
+    {id = "3716494426", name = "Рубашка 5", rarity = "Rare", type = "Shirt"},
+    {id = "11849088400", name = "Рубашка 6", rarity = "Rare", type = "Shirt"},
+    {id = "7896098117", name = "Рубашка 7", rarity = "Rare", type = "Shirt"},
+    {id = "8509230330", name = "Рубашка 8", rarity = "Rare", type = "Shirt"},
+    {id = "4615028029", name = "Рубашка 9", rarity = "Rare", type = "Shirt"},
+    {id = "7675755130", name = "Рубашка 10", rarity = "Rare", type = "Shirt"},
+    {id = "6844713210", name = "Рубашка 11", rarity = "Rare", type = "Shirt"},
+    {id = "126118133870839", name = "Рубашка 12", rarity = "Rare", type = "Shirt"}
 }
 
-local markers = {}
-local highlights = {}
+-- Переменные для состояний
+local NoclipEnabled = false
+local PerformanceMode = false
+local originalMaterials = {}
 
-local function createMarker(item, text, color)
+-- Функция для создания красивого маркера
+local function createClothingMarker(item, info)
     local adornee = item.Parent:FindFirstChild("Torso") or 
                    item.Parent:FindFirstChild("UpperTorso") or
-                   item.Parent:FindFirstChild("Right Leg") or
+                   item.Parent:FindFirstChild("HumanoidRootPart") or
                    item
-    
+
     if not adornee then return end
-    
+
     -- Создаем Highlight
     local highlight = Instance.new("Highlight")
-    highlight.FillColor = color
-    highlight.OutlineColor = color
+    highlight.Name = "ClothingHighlight"
+    highlight.FillColor = Color3.fromRGB(0, 150, 255)
+    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+    highlight.FillTransparency = 0.6
+    highlight.OutlineTransparency = 0
     highlight.Parent = item
-    table.insert(highlights, highlight)
-    
-    -- Создаем BillboardGui
+
+    -- Создаем красивый BillboardGui
     local gui = Instance.new("BillboardGui")
     gui.Name = "ClothingMarker"
     gui.Adornee = adornee
-    gui.Size = UDim2.new(6, 0, 2, 0)
-    gui.StudsOffset = Vector3.new(0, 3, 0)
+    gui.Size = UDim2.new(8, 0, 2.5, 0)
+    gui.StudsOffset = Vector3.new(0, 3.5, 0)
     gui.AlwaysOnTop = true
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     gui.Parent = adornee
-    
-    local label = Instance.new("TextLabel")
-    label.Text = text
-    label.Size = UDim2.new(1, 0, 1, 0)
-    label.BackgroundTransparency = 1
-    label.TextColor3 = color
-    label.TextScaled = true
-    label.Font = Enum.Font.SourceSansBold
-    label.Parent = gui
-    
-    table.insert(markers, gui)
-    return gui
+
+    -- Основной контейнер
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+    frame.BackgroundTransparency = 0.3
+    frame.BorderSizePixel = 0
+    frame.Parent = gui
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = frame
+
+    -- Заголовок с названием
+    local title = Instance.new("TextLabel")
+    title.Text = info.name
+    title.Size = UDim2.new(1, -10, 0.4, 0)
+    title.Position = UDim2.new(0, 5, 0, 5)
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.TextScaled = true
+    title.Font = Enum.Font.GothamBold
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.Parent = frame
+
+    -- Детали
+    local details = Instance.new("TextLabel")
+    details.Text = string.format("ID: %s | %s", info.id, info.rarity)
+    details.Size = UDim2.new(1, -10, 0.3, 0)
+    details.Position = UDim2.new(0, 5, 0.4, 0)
+    details.TextColor3 = Color3.fromRGB(200, 200, 200)
+    details.TextScaled = true
+    details.Font = Enum.Font.Gotham
+    details.BackgroundTransparency = 1
+    details.TextXAlignment = Enum.TextXAlignment.Left
+    details.Parent = frame
+
+    -- Иконка типа
+    local typeIcon = Instance.new("ImageLabel")
+    typeIcon.Size = UDim2.new(0.1, 0, 0.3, 0)
+    typeIcon.Position = UDim2.new(0.9, -5, 0.65, 0)
+    typeIcon.BackgroundTransparency = 1
+    typeIcon.Image = info.type == "Shirt" and "rbxassetid://10734951510" or "rbxassetid://10734951713"
+    typeIcon.Parent = frame
+
+    return {highlight = highlight, gui = gui}
 end
 
+-- Функция для очистки всех маркеров
 local function clearAllMarkers()
-    for _, marker in ipairs(markers) do
-        marker:Destroy()
+    for _, item in ipairs(workspace:GetDescendants()) do
+        if item.Name == "ClothingHighlight" or item.Name == "ClothingMarker" then
+            item:Destroy()
+        end
     end
-    for _, highlight in ipairs(highlights) do
-        highlight:Destroy()
-    end
-    markers = {}
-    highlights = {}
 end
 
-Tabs.Main:AddButton({
-    Title = "Найти одежду",
-    Description = "Поиск по всем ID в папке Clothing",
-    Callback = function()
-        clearAllMarkers()
+-- Функция поиска одежды
+local function findClothingItems()
+    clearAllMarkers()
+    
+    local clothingFolder = workspace:FindFirstChild("Clothing")
+    if not clothingFolder then
+        Fluent:Notify({
+            Title = "Ошибка",
+            Content = "Папка Clothing не найдена!",
+            Duration = 5,
+            SubContent = "Проверьте наличие папки в Workspace"
+        })
+        return
+    end
+
+    local foundCount = 0
+    local searchStart = os.clock()
+
+    for _, info in ipairs(clothingItems) do
+        local template = "rbxassetid://"..info.id
         
-        local clothingFolder = workspace:FindFirstChild("Clothing")
-        if not clothingFolder then
-            Fluent:Notify({
-                Title = "Ошибка",
-                Content = "Папка Clothing не найдена!",
-                Duration = 5
-            })
-            return
-        end
-        
-        local found = 0
-        
-        for _, id in ipairs(clothingIDs) do
-            local template = "rbxassetid://"..id
-            
-            for _, item in ipairs(clothingFolder:GetDescendants()) do
-                if item:IsA("Shirt") and item.ShirtTemplate == template then
-                    createMarker(item, "SHIRT: "..id, Color3.new(1, 0, 0))
-                    found += 1
-                elseif item:IsA("Pants") and item.PantsTemplate == template then
-                    createMarker(item, "PANTS: "..id, Color3.new(0, 1, 0))
-                    found += 1
-                end
+        for _, item in ipairs(clothingFolder:GetDescendants()) do
+            if (info.type == "Shirt" and item:IsA("Shirt") and item.ShirtTemplate == template) or
+               (info.type == "Pants" and item:IsA("Pants") and item.PantsTemplate == template) then
+                createClothingMarker(item, info)
+                foundCount = foundCount + 1
             end
         end
-        
-        if found > 0 then
-            Fluent:Notify({
-                Title = "Успех",
-                Content = "Найдено элементов: "..found,
-                Duration = 5
-            })
-        else
-            Fluent:Notify({
-                Title = "Результат",
-                Content = "Совпадений не найдено!",
-                Duration = 5
-            })
+    end
+
+    local searchTime = math.floor((os.clock() - searchStart) * 1000)
+    
+    Fluent:Notify({
+        Title = "Поиск завершен",
+        Content = string.format("Найдено предметов: %d/%d", foundCount, #clothingItems),
+        SubContent = string.format("Время поиска: %d мс", searchTime),
+        Duration = 5
+    })
+end
+
+-- Функции для режимов
+local function toggleNoclip(value)
+    NoclipEnabled = value
+    local character = game.Players.LocalPlayer.Character
+    if character then
+        for _, part in ipairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = not NoclipEnabled
+            end
         end
     end
+end
+
+local function togglePerformanceMode(value)
+    PerformanceMode = value
+    
+    if PerformanceMode then
+        for _, part in ipairs(workspace:GetDescendants()) do
+            if part:IsA("BasePart") and not part:IsA("Terrain") then
+                originalMaterials[part] = part.Material
+                part.Material = Enum.Material.SmoothPlastic
+            elseif part:IsA("UnionOperation") then
+                originalMaterials[part] = part.Material
+                part.Material = Enum.Material.SmoothPlastic
+            end
+        end
+    else
+        for part, material in pairs(originalMaterials) do
+            if part and part.Parent then
+                part.Material = material
+            end
+        end
+        originalMaterials = {}
+    end
+end
+
+-- Добавляем элементы UI
+Tabs.Main:AddButton({
+    Title = "Найти всю одежду",
+    Description = "Поиск всех предметов из базы данных",
+    Callback = findClothingItems
 })
 
 Tabs.Main:AddButton({
     Title = "Очистить маркеры",
-    Description = "Удаляет все созданные маркеры",
-    Callback = function()
-        clearAllMarkers()
-        Fluent:Notify({
-            Title = "Успех",
-            Content = "Все маркеры удалены",
-            Duration = 3
-        })
-    end
+    Description = "Удаляет все созданные маркеры и подсветки",
+    Callback = clearAllMarkers
 })
 
--- Добавим возможность ввода своих ID
-local Input = Tabs.Main:AddInput("CustomID", {
-    Title = "Добавить ID",
-    Placeholder = "Введите ID одежды",
-    Numeric = true,
-    Finished = true,
-    Callback = function(Value)
-        if Value and Value ~= "" then
-            table.insert(clothingIDs, Value)
-            Fluent:Notify({
-                Title = "Успех",
-                Content = "ID добавлен: "..Value,
-                Duration = 3
-            })
+Tabs.Settings:AddToggle("NoclipToggle", {
+    Title = "Режим Noclip",
+    Description = "Позволяет проходить сквозь стены",
+    Default = false,
+    Callback = toggleNoclip
+})
+
+Tabs.Settings:AddToggle("PerfModeToggle", {
+    Title = "Режим производительности",
+    Description = "Заменяет материалы на SmoothPlastic",
+    Default = false,
+    Callback = togglePerformanceMode
+})
+
+-- Автоматическое обновление Noclip
+game:GetService("RunService").Stepped:Connect(function()
+    if NoclipEnabled and game.Players.LocalPlayer.Character then
+        for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
         end
     end
-})
+end)
 
+-- Инициализация
 Window:SelectTab(1)
 Fluent:Notify({
-    Title = "Clothing Finder",
-    Content = "Скрипт успешно загружен",
+    Title = "Clothing Finder загружен",
+    Content = string.format("База данных: %d предметов", #clothingItems),
     Duration = 5
 })
