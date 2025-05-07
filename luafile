@@ -121,6 +121,21 @@ local clothingItems = {
     {id = "8033166879", name = "Рубашка 32", rarity = "Legendary", type = "Shirt"},
     {id = "7062014233", name = "Рубашка 33", rarity = "Legendary", type = "Shirt"},
     {id = "5847799987", name = "Рубашка 34", rarity = "Epic", type = "Shirt"},
+    {id = "14217806789", name = "Рубашка 34", rarity = "Epic", type = "Shirt"},
+    {id = "15092420593", name = "Рубашка 35", rarity = "Ultimate", type = "Shirt"},
+    {id = "13783114776", name = "Рубашка 36", rarity = "Ultimate", type = "Shirt"},
+    {id = "15587383081", name = "Рубашка 37", rarity = "Legendary", type = "Shirt"},
+    {id = "11381974611", name = "Рубашка 38", rarity = "Epic", type = "Shirt"},
+    {id = "12561824520", name = "Рубашка 39", rarity = "Epic", type = "Shirt"},
+    {id = "7213331261", name = "Рубашка 40", rarity = "Legendary", type = "Shirt"},
+    {id = "11573571524", name = "Рубашка 41", rarity = "Legendary", type = "Shirt"},
+    {id = "13152295510", name = "Рубашка 42", rarity = "Ultimate", type = "Shirt"},
+    {id = "76769657156740", name = "Рубашка 43", rarity = "Ultimate", type = "Shirt"},
+    {id = "12910400367", name = "Рубашка 44", rarity = "Legendary", type = "Shirt"},
+    {id = "8269493144", name = "Рубашка 45", rarity = "Ultimate", type = "Shirt"},
+    {id = "442912140", name = "Рубашка 46", rarity = "Ultimate", type = "Shirt"},
+    {id = "7707265036", name = "Рубашка 47", rarity = "Ultimate", type = "Shirt"},
+    {id = "104199693226981", name = "Рубашка 48", rarity = "Ultimate", type = "Shirt"},
 
     -- Штаны (Pants)
     {id = "17128188843", name = "Штаны 1", rarity = "Ultimate", type = "Pants"},
@@ -137,7 +152,12 @@ local clothingItems = {
     {id = "3697948635", name = "Штаны 12", rarity = "Legendary", type = "Pants"},
     {id = "94566246905646", name = "Штаны 13", rarity = "Ultimate", type = "Pants"},
     {id = "18167983354", name = "Штаны 14", rarity = "Legendary", type = "Pants"},
-    {id = "95941542699731", name = "Штаны 15", rarity = "Ultimate", type = "Pants"}
+    {id = "95941542699731", name = "Штаны 15", rarity = "Ultimate", type = "Pants"},
+     {id = "10837133953", name = "Штаны 16", rarity = "Ultimate", type = "Pants"},
+    {id = "13783120680", name = "Штаны 17", rarity = "Ultimate", type = "Pants"},
+    {id = "13216084567", name = "Штаны 18", rarity = "Ultimate", type = "Pants"},
+    {id = "15659684256", name = "Штаны 19", rarity = "Ultimate", type = "Pants"}
+}
 }
 
 -- Переменные для состояний
@@ -170,6 +190,8 @@ local function createClothingMarker(item, info)
         rarityColor = Color3.fromRGB(255, 170, 0) -- Оранжевый
     elseif rarity == "Ultimate" then
         rarityColor = Color3.fromRGB(255, 50, 50) -- Красный
+    elseif rarity == "Mythic" then
+        rarityColor = Color3.fromRGB(255, 50, 50)
     else
         rarityColor = Color3.fromRGB(200, 200, 200) -- Серый по умолчанию
     end
@@ -350,7 +372,7 @@ local function scanPlayersClothing()
         if clothingFolder then
             for _, descendant in ipairs(clothingFolder:GetDescendants()) do
                 if descendant:IsA("StringValue") and 
-                   (descendant.Value == "Epic" or descendant.Value == "Legendary" or descendant.Value == "Ultimate") then
+                   (descendant.Value == "Epic" or descendant.Value == "Legendary" or descendant.Value == "Ultimate" or descendant.Value == "Mythic") then
                     
                     local parent = descendant.Parent
                     local idValue = parent:FindFirstChild("id")
