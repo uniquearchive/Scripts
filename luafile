@@ -168,6 +168,12 @@ local clothingItems = {
     {id = "5219845999", name = "Рубашка 78", rarity = "Mythic", type = "Shirt"},
     {id = "12989076486", name = "Рубашка 79", rarity = "Mythic", type = "Shirt"},
     {id = "17403477379", name = "Рубашка 80", rarity = "Legendary", type = "Shirt"},
+     {id = "15766609753", name = "Рубашка 81", rarity = "Legendary", type = "Shirt"},
+    {id = "5059249468", name = "Рубашка 82", rarity = "Legendary", type = "Shirt"},
+    {id = "12963017527", name = "Рубашка 83", rarity = "Ultimate", type = "Shirt"},
+    {id = "10229510434", name = "Рубашка 84", rarity = "Legendary", type = "Shirt"},
+    {id = "9822514721", name = "Рубашка 85", rarity = "Legendary", type = "Shirt"},
+    {id = "18586727787", name = "Рубашка 86", rarity = "Legendary", type = "Shirt"},
 
     -- Штаны (Pants)
     {id = "17128188843", name = "Штаны 1", rarity = "Ultimate", type = "Pants"},
@@ -199,7 +205,8 @@ local clothingItems = {
     {id = "6028443041", name = "Штаны 27", rarity = "Mythic", type = "Pants"},
     {id = "9743673456", name = "Штаны 28", rarity = "Mythic", type = "Pants"},
     {id = "12010480457", name = "Штаны 29", rarity = "Mythic", type = "Pants"},
-    {id = "13132377517", name = "Штаны 30", rarity = "Mythic", type = "Pants"}
+    {id = "13132377517", name = "Штаны 30", rarity = "Mythic", type = "Pants"},
+    {id = "111979865046981", name = "Штаны 31", rarity = "Ultimate", type = "Pants"}
 }
 
 -- Переменные для состояний
@@ -233,7 +240,7 @@ local function createClothingMarker(item, info)
     elseif rarity == "Ultimate" then
         rarityColor = Color3.fromRGB(255, 50, 50) -- Красный
     elseif rarity == "Mythic" then
-        rarityColor = Color3.fromRGB(255, 50, 50)
+        rarityColor = Color3.fromRGB(255, 215, 0)
     else
         rarityColor = Color3.fromRGB(200, 200, 200) -- Серый по умолчанию
     end
@@ -312,7 +319,7 @@ local function createClothingMarker(item, info)
     typeIcon.Size = UDim2.new(0.1, 0, 0.3, 0)
     typeIcon.Position = UDim2.new(0.9, -5, 0.7, 0)
     typeIcon.BackgroundTransparency = 1
-    typeIcon.Image = itemType == "shirt" and "rbxassetid://10734951510" or "rbxassetid://10734951713"
+    typeIcon.Image = "rbxassetid://10734951510"
     typeIcon.Parent = frame
 
     return gui
