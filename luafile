@@ -2,7 +2,7 @@ local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/
 
 local Window = Fluent:CreateWindow({
     Title = "Advanced Clothing Finder",
-    SubTitle = "v2.0 | Полная база предметов",
+    SubTitle = "v3.0 | Полная база предметов",
     TabWidth = 160,
     Size = UDim2.fromOffset(650, 500),
     Acrylic = true,
