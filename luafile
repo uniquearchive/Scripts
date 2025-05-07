@@ -136,6 +136,30 @@ local clothingItems = {
     {id = "442912140", name = "Рубашка 46", rarity = "Ultimate", type = "Shirt"},
     {id = "7707265036", name = "Рубашка 47", rarity = "Ultimate", type = "Shirt"},
     {id = "104199693226981", name = "Рубашка 48", rarity = "Ultimate", type = "Shirt"},
+    {id = "13812694018", name = "Рубашка 49", rarity = "Epic", type = "Shirt"},
+    {id = "15092420593", name = "Рубашка 50", rarity = "Ultimate", type = "Shirt"},
+    {id = "10687044095", name = "Рубашка 51", rarity = "Legendary", type = "Shirt"},
+    {id = "9874097801", name = "Рубашка 52", rarity = "Epic", type = "Shirt"},
+    {id = "8269493144", name = "Рубашка 53", rarity = "Ultimate", type = "Shirt"},
+    {id = "150009561", name = "Рубашка 54", rarity = "Legendary", type = "Shirt"},
+    {id = "13783114776", name = "Рубашка 55", rarity = "Ultimate", type = "Shirt"},
+    {id = "15587383081", name = "Рубашка 56", rarity = "Legendary", type = "Shirt"},
+    {id = "82405030823334", name = "Рубашка 57", rarity = "Ultimate", type = "Shirt"},
+    {id = "13678470490", name = "Рубашка 58", rarity = "Legendary", type = "Shirt"},
+    {id = "4977533364", name = "Рубашка 59", rarity = "Legendary", type = "Shirt"},
+    {id = "442912140", name = "Рубашка 60", rarity = "Ultimate", type = "Shirt"},
+    {id = "9049990465", name = "Рубашка 61", rarity = "Legendary", type = "Shirt"},
+    {id = "9598420858", name = "Рубашка 62", rarity = "Ultimate", type = "Shirt"},
+    {id = "84478698988948", name = "Рубашка 63", rarity = "Ultimate", type = "Shirt"},
+    {id = "6219199697", name = "Рубашка 64", rarity = "Ultimate", type = "Shirt"},
+    {id = "15487765991", name = "Рубашка 65", rarity = "Legendary", type = "Shirt"},
+    {id = "140110869545021", name = "Рубашка 66", rarity = "Ultimate", type = "Shirt"},
+    {id = "15393383586", name = "Рубашка 67", rarity = "Ultimate", type = "Shirt"},
+    {id = "6539635635", name = "Рубашка 68", rarity = "Ultimate", type = "Shirt"},
+    {id = "10086069045", name = "Рубашка 69", rarity = "Ultimate", type = "Shirt"},
+    {id = "13152295510", name = "Рубашка 70", rarity = "Ultimate", type = "Shirt"},
+    {id = "104199693226981", name = "Рубашка 71", rarity = "Ultimate", type = "Shirt"},
+    {id = "7707265036", name = "Рубашка 72", rarity = "Ultimate", type = "Shirt"},
 
     -- Штаны (Pants)
     {id = "17128188843", name = "Штаны 1", rarity = "Ultimate", type = "Pants"},
@@ -156,8 +180,14 @@ local clothingItems = {
      {id = "10837133953", name = "Штаны 16", rarity = "Ultimate", type = "Pants"},
     {id = "13783120680", name = "Штаны 17", rarity = "Ultimate", type = "Pants"},
     {id = "13216084567", name = "Штаны 18", rarity = "Ultimate", type = "Pants"},
-    {id = "15659684256", name = "Штаны 19", rarity = "Ultimate", type = "Pants"}
-}
+    {id = "15659684256", name = "Штаны 19", rarity = "Ultimate", type = "Pants"},
+    {id = "17594411926", name = "Штаны 20", rarity = "Epic", type = "Pants"},
+    {id = "13216084567", name = "Штаны 21", rarity = "Ultimate", type = "Pants"},
+    {id = "9137942733", name = "Штаны 22", rarity = "Legendary", type = "Pants"},
+    {id = "18869304756", name = "Штаны 23", rarity = "Legendary", type = "Pants"},
+    {id = "15659684256", name = "Штаны 24", rarity = "Ultimate", type = "Pants"},
+    {id = "13783120680", name = "Штаны 25", rarity = "Ultimate", type = "Pants"},
+    {id = "10837133953", name = "Штаны 26", rarity = "Ultimate", type = "Pants"}
 }
 
 -- Переменные для состояний
