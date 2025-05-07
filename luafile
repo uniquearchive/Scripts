@@ -75,6 +75,7 @@ local clothingItems = {
     {id = "9966500982", name = "Серая рубашка [6]", rarity = "Rare", type = "Shirt"},
 
     -- Дополнительные старые ID
+    {id = "17594663285", name = "Рубашка 87", rarity = "Rare", type = "Shirt"},
     {id = "13469431113", name = "Рубашка 1", rarity = "Rare", type = "Shirt"},
     {id = "13117322111", name = "Рубашка 2", rarity = "Rare", type = "Shirt"},
     {id = "13686174169", name = "Рубашка 3", rarity = "Rare", type = "Shirt"},
