@@ -331,18 +331,40 @@ local function scanPlayersClothing()
                 {
             Title = "Копировать список",
             Callback = function()
-                -- Формируем текст для копирования
-                local copyText = string.format("Найдено %d редких предметов у %d игроков:\n", rareItemsFound, totalScanned)
-                for i, item in ipairs(foundItems) do
-                    copyText = copyText .. string.format("%d. %s: %s (ID: %d) - %s\n", 
-                        i, item.playerName, item.type, item.id, item.rarity)
-                end
-                setclipboard(copyText)
-                Fluent:Notify({
+                    -- Создаем таблицу для уникальных ID
+                    local uniqueIds = {}
+                    local filteredItems = {}
+                    
+                    -- Фильтруем предметы, исключая дубликаты и уже существующие в clothingItems
+                    for _, item in ipairs(foundItems) do
+                        local idStr = tostring(item.id)
+                        -- Проверяем что ID уникален в найденных предметах и отсутствует в основной таблице
+                        if not uniqueIds[idStr] and not isIdExists(item.id) then
+                            uniqueIds[idStr] = true
+                            table.insert(filteredItems, item)
+                        end
+                    end
+                    
+                    -- Формируем текст для копирования
+                    local copyText
+                    if #filteredItems > 0 then
+                        copyText = string.format("Найдено %d уникальных предметов (отфильтровано из %d):\n", #filteredItems, #foundItems)
+                        for i, item in ipairs(filteredItems) do
+                            copyText = copyText .. string.format("%d. %s: %s (ID: %d) - %s\n", 
+                                i, item.playerName, item.type, item.id, item.rarity)
+                        end
+                    else
+                        copyText = "Нет новых уникальных предметов для копирования"
+                    end
+                    
+                    setclipboard(copyText)
+                    Fluent:Notify({
                         Title = "Скопировано",
-                        Content = "Список предметов скопирован в буфер обмена",
+                        Content = #filteredItems > 0 and 
+                                 string.format("Скопировано %d уникальных предметов", #filteredItems) or
+                                 "Нет новых предметов для копирования",
                         Duration = 3
-                })
+                    })
                 end
                 },
                 {
