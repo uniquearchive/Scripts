@@ -86,7 +86,58 @@ local clothingItems = {
     {id = "4615028029", name = "Рубашка 9", rarity = "Rare", type = "Shirt"},
     {id = "7675755130", name = "Рубашка 10", rarity = "Rare", type = "Shirt"},
     {id = "6844713210", name = "Рубашка 11", rarity = "Rare", type = "Shirt"},
-    {id = "126118133870839", name = "Рубашка 12", rarity = "Rare", type = "Shirt"}
+    {id = "126118133870839", name = "Рубашка 12", rarity = "Rare", type = "Shirt"},
+    {id = "13121694238", name = "Рубашка 1", rarity = "Epic", type = "Shirt"},
+    {id = "7234088471", name = "Рубашка 2", rarity = "Legendary", type = "Shirt"},
+    {id = "7791541976", name = "Рубашка 3", rarity = "Epic", type = "Shirt"},
+    {id = "8089739020", name = "Рубашка 4", rarity = "Epic", type = "Shirt"},
+    {id = "13214898787", name = "Рубашка 5", rarity = "Epic", type = "Shirt"},
+    {id = "5107067196", name = "Рубашка 6", rarity = "Epic", type = "Shirt"},
+    {id = "16773360011", name = "Рубашка 7", rarity = "Legendary", type = "Shirt"},
+    {id = "79354873126664", name = "Рубашка 8", rarity = "Ultimate", type = "Shirt"},
+    {id = "2184442686", name = "Рубашка 9", rarity = "Epic", type = "Shirt"},
+    {id = "16109675334", name = "Рубашка 10", rarity = "Legendary", type = "Shirt"},
+    {id = "6218715240", name = "Рубашка 11", rarity = "Legendary", type = "Shirt"},
+    {id = "9599254814", name = "Рубашка 12", rarity = "Ultimate", type = "Shirt"},
+    {id = "11924356722", name = "Рубашка 13", rarity = "Ultimate", type = "Shirt"},
+    {id = "10609335809", name = "Рубашка 14", rarity = "Legendary", type = "Shirt"},
+    {id = "11552449342", name = "Рубашка 15", rarity = "Legendary", type = "Shirt"},
+    {id = "11872693850", name = "Рубашка 16", rarity = "Legendary", type = "Shirt"},
+    {id = "86152704171465", name = "Рубашка 17", rarity = "Legendary", type = "Shirt"},
+    {id = "15692389658", name = "Рубашка 18", rarity = "Ultimate", type = "Shirt"},
+    {id = "17802269792", name = "Рубашка 19", rarity = "Ultimate", type = "Shirt"},
+    {id = "8494220337", name = "Рубашка 20", rarity = "Ultimate", type = "Shirt"},
+    {id = "15897128574", name = "Рубашка 21", rarity = "Ultimate", type = "Shirt"},
+    {id = "11230568359", name = "Рубашка 22", rarity = "Legendary", type = "Shirt"},
+    {id = "6127221545", name = "Рубашка 23", rarity = "Ultimate", type = "Shirt"},
+    {id = "100322241534120", name = "Рубашка 24", rarity = "Ultimate", type = "Shirt"},
+    {id = "8140955289", name = "Рубашка 25", rarity = "Ultimate", type = "Shirt"},
+    {id = "18353849831", name = "Рубашка 26", rarity = "Ultimate", type = "Shirt"},
+    {id = "123317251719657", name = "Рубашка 27", rarity = "Ultimate", type = "Shirt"},
+    {id = "11231715498", name = "Рубашка 28", rarity = "Epic", type = "Shirt"},
+    {id = "9942337688", name = "Рубашка 29", rarity = "Legendary", type = "Shirt"},
+    {id = "12551456000", name = "Рубашка 30", rarity = "Ultimate", type = "Shirt"},
+    {id = "7011603461", name = "Рубашка 31", rarity = "Legendary", type = "Shirt"},
+    {id = "8033166879", name = "Рубашка 32", rarity = "Legendary", type = "Shirt"},
+    {id = "7062014233", name = "Рубашка 33", rarity = "Legendary", type = "Shirt"},
+    {id = "5847799987", name = "Рубашка 34", rarity = "Epic", type = "Shirt"},
+
+    -- Штаны (Pants)
+    {id = "17128188843", name = "Штаны 1", rarity = "Ultimate", type = "Pants"},
+    {id = "16726691043", name = "Штаны 2", rarity = "Legendary", type = "Pants"},
+    {id = "13112278729", name = "Штаны 3", rarity = "Epic", type = "Pants"},
+    {id = "13725833712", name = "Штаны 4", rarity = "Epic", type = "Pants"},
+    {id = "9126718311", name = "Штаны 5", rarity = "Legendary", type = "Pants"},
+    {id = "17042192826", name = "Штаны 6", rarity = "Ultimate", type = "Pants"},
+    {id = "14352047243", name = "Штаны 7", rarity = "Ultimate", type = "Pants"},
+    {id = "120068287892778", name = "Штаны 8", rarity = "Ultimate", type = "Pants"},
+    {id = "6804184286", name = "Штаны 9", rarity = "Ultimate", type = "Pants"},
+    {id = "15091951529", name = "Штаны 10", rarity = "Ultimate", type = "Pants"},
+    {id = "94451659156623", name = "Штаны 11", rarity = "Ultimate", type = "Pants"},
+    {id = "3697948635", name = "Штаны 12", rarity = "Legendary", type = "Pants"},
+    {id = "94566246905646", name = "Штаны 13", rarity = "Ultimate", type = "Pants"},
+    {id = "18167983354", name = "Штаны 14", rarity = "Legendary", type = "Pants"},
+    {id = "95941542699731", name = "Штаны 15", rarity = "Ultimate", type = "Pants"}
 }
 
 -- Переменные для состояний
@@ -111,11 +162,23 @@ local function createClothingMarker(item, info)
     local rarity = info.rarity or "Обычный"
     local itemType = info.type and info.type:lower() or "shirt"
 
-    -- Создаем только BillboardGui
+    -- Определяем цвет редкости
+    local rarityColor
+    if rarity == "Epic" then
+        rarityColor = Color3.fromRGB(170, 0, 255) -- Фиолетовый
+    elseif rarity == "Legendary" then
+        rarityColor = Color3.fromRGB(255, 170, 0) -- Оранжевый
+    elseif rarity == "Ultimate" then
+        rarityColor = Color3.fromRGB(255, 50, 50) -- Красный
+    else
+        rarityColor = Color3.fromRGB(200, 200, 200) -- Серый по умолчанию
+    end
+
+    -- Создаем BillboardGui
     local gui = Instance.new("BillboardGui")
     gui.Name = "ClothingMarker"
     gui.Adornee = adornee
-    gui.Size = UDim2.new(8, 0, 2.5, 0)
+    gui.Size = UDim2.new(8, 0, 3, 0) -- Увеличили высоту для нового текста
     gui.StudsOffset = Vector3.new(0, 3.5, 0)
     gui.AlwaysOnTop = true
     gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -133,10 +196,10 @@ local function createClothingMarker(item, info)
     corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = frame
 
-    -- Заголовок
+    -- Заголовок (название предмета)
     local title = Instance.new("TextLabel")
     title.Text = itemName
-    title.Size = UDim2.new(1, -10, 0.4, 0)
+    title.Size = UDim2.new(1, -10, 0.3, 0) -- Уменьшили высоту
     title.Position = UDim2.new(0, 5, 0, 5)
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.TextScaled = true
@@ -145,22 +208,45 @@ local function createClothingMarker(item, info)
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.Parent = frame
 
-    -- Детали
-    local details = Instance.new("TextLabel")
-    details.Text = string.format("ID: %s | %s", itemId, rarity)
-    details.Size = UDim2.new(1, -10, 0.3, 0)
-    details.Position = UDim2.new(0, 5, 0.4, 0)
-    details.TextColor3 = Color3.fromRGB(200, 200, 200)
-    details.TextScaled = true
-    details.Font = Enum.Font.Gotham
-    details.BackgroundTransparency = 1
-    details.TextXAlignment = Enum.TextXAlignment.Left
-    details.Parent = frame
+    -- ID предмета
+    local idLabel = Instance.new("TextLabel")
+    idLabel.Text = "ID: " .. itemId
+    idLabel.Size = UDim2.new(1, -10, 0.2, 0)
+    idLabel.Position = UDim2.new(0, 5, 0.3, 0)
+    idLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+    idLabel.TextScaled = true
+    idLabel.Font = Enum.Font.Gotham
+    idLabel.BackgroundTransparency = 1
+    idLabel.TextXAlignment = Enum.TextXAlignment.Left
+    idLabel.Parent = frame
+
+    -- Редкость (красиво оформленная)
+    local rarityFrame = Instance.new("Frame")
+    rarityFrame.Size = UDim2.new(1, -10, 0.2, 0)
+    rarityFrame.Position = UDim2.new(0, 5, 0.5, 0)
+    rarityFrame.BackgroundColor3 = rarityColor
+    rarityFrame.BackgroundTransparency = 0.7
+    rarityFrame.BorderSizePixel = 0
+    rarityFrame.Parent = frame
+
+    local rarityCorner = Instance.new("UICorner")
+    rarityCorner.CornerRadius = UDim.new(0, 4)
+    rarityCorner.Parent = rarityFrame
+
+    local rarityLabel = Instance.new("TextLabel")
+    rarityLabel.Text = rarity:upper()
+    rarityLabel.Size = UDim2.new(1, 0, 1, 0)
+    rarityLabel.Position = UDim2.new(0, 0, 0, 0)
+    rarityLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    rarityLabel.TextScaled = true
+    rarityLabel.Font = Enum.Font.GothamBold
+    rarityLabel.BackgroundTransparency = 1
+    rarityLabel.Parent = rarityFrame
 
     -- Иконка типа
     local typeIcon = Instance.new("ImageLabel")
     typeIcon.Size = UDim2.new(0.1, 0, 0.3, 0)
-    typeIcon.Position = UDim2.new(0.9, -5, 0.65, 0)
+    typeIcon.Position = UDim2.new(0.9, -5, 0.7, 0)
     typeIcon.BackgroundTransparency = 1
     typeIcon.Image = itemType == "shirt" and "rbxassetid://10734951510" or "rbxassetid://10734951713"
     typeIcon.Parent = frame
