@@ -75,7 +75,7 @@ local clothingItems = {
     {id = "9966500982", name = "Серая рубашка [6]", rarity = "Rare", type = "Shirt"},
 
     -- Дополнительные старые ID
-    {id = "17594663285", name = "Рубашка 87", rarity = "Rare", type = "Shirt"},
+   -- {id = "17594663285", name = "Рубашка 87", rarity = "Rare", type = "Shirt"},
     {id = "13469431113", name = "Рубашка 1", rarity = "Rare", type = "Shirt"},
     {id = "13117322111", name = "Рубашка 2", rarity = "Rare", type = "Shirt"},
     {id = "13686174169", name = "Рубашка 3", rarity = "Rare", type = "Shirt"},
@@ -368,7 +368,7 @@ local function addToClothingTable(itemsToAdd)
     return addedCount
 end
 
--- Функция поиска одежды
+-- Функция поиска одежды по частичному совпадению ID
 local function findClothingItems()
     clearAllMarkers()
     
@@ -387,13 +387,21 @@ local function findClothingItems()
     local searchStart = os.clock()
 
     for _, info in ipairs(clothingItems) do
-        local template = "rbxassetid://"..info.id
+        -- Берем первые 6 цифр ID (или меньше, если ID короче)
+        local partialId = string.sub(tostring(info.id), 1, 6)
         
         for _, item in ipairs(clothingFolder:GetDescendants()) do
-            if (info.type == "Shirt" and item:IsA("Shirt") and item.ShirtTemplate == template) or
-               (info.type == "Pants" and item:IsA("Pants") and item.PantsTemplate == template) then
-                createClothingMarker(item, info)
-                foundCount = foundCount + 1
+            local itemTemplate = (info.type == "Shirt" and item:IsA("Shirt") and item.ShirtTemplate) or
+                               (info.type == "Pants" and item:IsA("Pants") and item.PantsTemplate)
+            
+            if itemTemplate then
+                -- Извлекаем ID из шаблона (последняя часть URL)
+                local templateId = string.match(itemTemplate, "rbxassetid://(%d+)$")
+                if templateId and string.sub(templateId, 1, #partialId) == partialId then
+                    createClothingMarker(item, info)
+                    foundCount = foundCount + 1
+                    break -- Нашли совпадение, переходим к следующему предмету
+                end
             end
         end
     end
@@ -403,7 +411,7 @@ local function findClothingItems()
     Fluent:Notify({
         Title = "Поиск завершен",
         Content = string.format("Найдено предметов: %d/%d", foundCount, #clothingItems),
-        SubContent = string.format("Время поиска: %d мс", searchTime),
+        SubContent = string.format("Время поиска: %d мс (поиск по частичному ID)", searchTime),
         Duration = 5
     })
 end
