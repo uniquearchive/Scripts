@@ -663,7 +663,7 @@ Tabs.Main:AddButton({
     Callback = clearAllMarkers
 })
 
--- Кнопка статистики базы (исправленная)
+-- Кнопка статистики базы через уведомление
 Tabs.Main:AddButton({
     Title = "Статистика базы",
     Description = "Показывает сколько предметов каждой категории",
@@ -681,28 +681,25 @@ Tabs.Main:AddButton({
             end
         end
 
-        -- Формируем текст
-        local message = "📊 Статистика базы предметов:\n"
-        message = message .. string.format("Рубашек: %d\n", typeCount.Shirt)
-        message = message .. string.format("Штанов: %d\n", typeCount.Pants)
-        message = message .. "\nРедкости:\n"
+        -- Формируем краткое сообщение
+        local statsSummary = string.format(
+            "Рубашек: %d | Штанов: %d | Epic: %d | Legendary: %d | Ultimate: %d | Mythic: %d",
+            typeCount.Shirt or 0,
+            typeCount.Pants or 0,
+            rarityCount.Epic or 0,
+            rarityCount.Legendary or 0,
+            rarityCount.Ultimate or 0,
+            rarityCount.Mythic or 0
+        )
 
-        for rarity, count in pairs(rarityCount) do
-            message = message .. string.format("- %s: %d\n", rarity, count)
-        end
-
-        Window:Dialog({
-            Title = "Статистика базы",
-            Content = message,
-            Buttons = {
-                {
-                    Title = "Ок",
-                    Callback = function() end
-                }
-            }
+        Fluent:Notify({
+            Title = "📊 Статистика базы",
+            Content = statsSummary,
+            Duration = 5
         })
     end
 })
+
 
 
 Tabs.Main:AddButton({
@@ -759,29 +756,6 @@ Tabs.Game:AddButton({
         end
     end
 })
-
-Tabs.Game:AddButton({
-    Title = "Удалить телепорт",
-    Description = "Удаляет tp-парт",
-    Callback = function()
-        local tpPart = workspace:FindFirstChild("MainTimerForNew")
-        if tpPart and tpPart:FindFirstChild("tp") then
-            tpPart.tp:Destroy()
-            Fluent:Notify({
-                Title = "Удалено",
-                Content = "Телепорт парт был удалён.",
-                Duration = 3
-            })
-        else
-            Fluent:Notify({
-                Title = "Ошибка",
-                Content = "tp не найден!",
-                Duration = 3
-            })
-        end
-    end
-})
-
 
 Tabs.Game:AddToggle("NoclipToggle", {
     Title = "Режим Noclip",
