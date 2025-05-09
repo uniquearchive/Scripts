@@ -368,17 +368,35 @@ local function addToClothingTable(itemsToAdd)
     return addedCount
 end
 
--- Функция поиска одежды по частичному совпадению ID
-local function findClothingItems()
+-- Обновлённый список редкостей (без Common)
+local rarities = {"Epic", "Legendary", "Ultimate", "Mythic"}
+
+-- Переменная для хранения выбранной редкости
+local selectedRarity = "Epic"
+
+-- Dropdown для выбора редкости
+local rarityDropdown = Tabs.Main:AddDropdown("RarityDropdown", {
+    Title = "Выбор редкости",
+    Description = "Выберите редкость для фильтрации",
+    Values = rarities,
+    Multi = false,
+    Default = selectedRarity
+})
+
+rarityDropdown:OnChanged(function(Value)
+    selectedRarity = Value
+end)
+
+-- Функция поиска одежды по базе с фильтрацией
+local function findClothingItemsFiltered(filterRarity)
     clearAllMarkers()
-    
+
     local clothingFolder = workspace:FindFirstChild("Clothing")
     if not clothingFolder then
         Fluent:Notify({
             Title = "Ошибка",
             Content = "Папка Clothing не найдена!",
-            Duration = 5,
-            SubContent = "Проверьте наличие папки в Workspace"
+            Duration = 5
         })
         return
     end
@@ -387,34 +405,54 @@ local function findClothingItems()
     local searchStart = os.clock()
 
     for _, info in ipairs(clothingItems) do
-        -- Берем первые 6 цифр ID (или меньше, если ID короче)
-        local partialId = string.sub(tostring(info.id), 1, 6)
-        
-        for _, item in ipairs(clothingFolder:GetDescendants()) do
-            local itemTemplate = (info.type == "Shirt" and item:IsA("Shirt") and item.ShirtTemplate) or
-                               (info.type == "Pants" and item:IsA("Pants") and item.PantsTemplate)
-            
-            if itemTemplate then
-                -- Извлекаем ID из шаблона (последняя часть URL)
-                local templateId = string.match(itemTemplate, "rbxassetid://(%d+)$")
-                if templateId and string.sub(templateId, 1, #partialId) == partialId then
-                    createClothingMarker(item, info)
-                    foundCount = foundCount + 1
-                    break -- Нашли совпадение, переходим к следующему предмету
+        if not filterRarity or info.rarity == filterRarity then
+            local partialId = string.sub(tostring(info.id), 1, 6)
+
+            for _, item in ipairs(clothingFolder:GetDescendants()) do
+                local itemTemplate = (info.type == "Shirt" and item:IsA("Shirt") and item.ShirtTemplate) or
+                                     (info.type == "Pants" and item:IsA("Pants") and item.PantsTemplate)
+
+                if itemTemplate then
+                    local templateId = string.match(itemTemplate, "rbxassetid://(%d+)$")
+                    if templateId and string.sub(templateId, 1, #partialId) == partialId then
+                        createClothingMarker(item, info)
+                        foundCount = foundCount + 1
+                        break
+                    end
                 end
             end
         end
     end
 
     local searchTime = math.floor((os.clock() - searchStart) * 1000)
-    
+
     Fluent:Notify({
         Title = "Поиск завершен",
-        Content = string.format("Найдено предметов: %d/%d", foundCount, #clothingItems),
-        SubContent = string.format("Время поиска: %d мс (поиск по частичному ID)", searchTime),
+        Content = filterRarity and
+            string.format("Найдено %d предметов с редкостью: %s", foundCount, filterRarity) or
+            string.format("Найдено предметов: %d (все редкости)", foundCount),
+        SubContent = string.format("Время поиска: %d мс", searchTime),
         Duration = 5
     })
 end
+
+-- Кнопка для поиска по выбранной редкости
+Tabs.Main:AddButton({
+    Title = "Поиск по выбранной редкости",
+    Description = "Ищет предметы с выбранной редкостью",
+    Callback = function()
+        findClothingItemsFiltered(selectedRarity)
+    end
+})
+
+-- Кнопка для поиска по всем редкостям
+Tabs.Main:AddButton({
+    Title = "Поиск по всем редкостям",
+    Description = "Ищет предметы независимо от редкости",
+    Callback = function()
+        findClothingItemsFiltered(nil)
+    end
+})
 
 -- Модифицированная функция поиска у игроков
 local function scanPlayersClothing()
