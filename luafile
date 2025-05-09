@@ -623,13 +623,6 @@ local function togglePerformanceMode(value)
     end
 end
 
--- Добавляем элементы UI
-Tabs.Main:AddButton({
-    Title = "Найти всю одежду",
-    Description = "Поиск всех предметов из базы данных",
-    Callback = findClothingItems
-})
-
 Tabs.Main:AddButton({
     Title = "Очистить маркеры",
     Description = "Удаляет все созданные маркеры и подсветки",
