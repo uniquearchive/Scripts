@@ -2,7 +2,7 @@ local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/
 
 local Window = Fluent:CreateWindow({
     Title = "Advanced Clothing Finder",
-    SubTitle = "v3.0 | Полная база предметов",
+    SubTitle = "v3.5 | Полная база предметов",
     TabWidth = 160,
     Size = UDim2.fromOffset(650, 500),
     Acrylic = true,
@@ -12,7 +12,7 @@ local Window = Fluent:CreateWindow({
 local Tabs = {
     Main = Window:AddTab({Title = "Поиск одежды", Icon = "shirt"}),
     Players = Window:AddTab({Title = "Поиск у игроков", Icon = "users"}),
-    Settings = Window:AddTab({Title = "Настройки", Icon = "settings"})
+    Game = Window:AddTab({Title = "Игра", Icon = "gamepad"})
 }
 
 -- Полная таблица всех предметов
@@ -175,6 +175,30 @@ local clothingItems = {
     {id = "10229510434", name = "Рубашка 84", rarity = "Legendary", type = "Shirt"},
     {id = "9822514721", name = "Рубашка 85", rarity = "Legendary", type = "Shirt"},
     {id = "18586727787", name = "Рубашка 86", rarity = "Legendary", type = "Shirt"},
+     {id = "138959207204056", name = "Рубашка 87", rarity = "Ultimate", type = "Shirt"},
+    {id = "11545770636", name = "Рубашка 88", rarity = "Legendary", type = "Shirt"},
+    {id = "8619420551", name = "Рубашка 89", rarity = "Legendary", type = "Shirt"},
+    {id = "10745517097", name = "Рубашка 90", rarity = "Ultimate", type = "Shirt"},
+    {id = "10294171107", name = "Рубашка 91", rarity = "Legendary", type = "Shirt"},
+    {id = "7165895741", name = "Рубашка 92", rarity = "Ultimate", type = "Shirt"},
+    {id = "117530107136782", name = "Рубашка 93", rarity = "Ultimate", type = "Shirt"},
+    {id = "7968178290", name = "Рубашка 94", rarity = "Ultimate", type = "Shirt"},
+    {id = "129112352643946", name = "Рубашка 95", rarity = "Ultimate", type = "Shirt"},
+    {id = "7912962382", name = "Рубашка 96", rarity = "Ultimate", type = "Shirt"},
+    {id = "16310782452", name = "Рубашка 97", rarity = "Ultimate", type = "Shirt"},
+    {id = "14452478792", name = "Рубашка 98", rarity = "Ultimate", type = "Shirt"},
+    {id = "11399187402", name = "Рубашка 99", rarity = "Legendary", type = "Shirt"},
+    {id = "9933123074", name = "Рубашка 100", rarity = "Mythic", type = "Shirt"},
+    {id = "7224427060", name = "Рубашка 101", rarity = "Mythic", type = "Shirt"},
+    {id = "11672792331", name = "Рубашка 102", rarity = "Mythic", type = "Shirt"},
+    {id = "9840177812", name = "Рубашка 103", rarity = "Mythic", type = "Shirt"},
+    {id = "5349659898", name = "Рубашка 104", rarity = "Mythic", type = "Shirt"},
+    {id = "721898498", name = "Рубашка 105", rarity = "Mythic", type = "Shirt"},
+    {id = "13476313456", name = "Рубашка 106", rarity = "Mythic", type = "Shirt"},
+    {id = "71884263478673", name = "Рубашка 107", rarity = "Mythic", type = "Shirt"},
+    {id = "17061690446", name = "Рубашка 108", rarity = "Ultimate", type = "Shirt"},
+    {id = "9692855152", name = "Рубашка 109", rarity = "Ultimate", type = "Shirt"},
+    {id = "11327060674", name = "Рубашка 110", rarity = "Ultimate", type = "Shirt"},
 
     -- Штаны (Pants)
     {id = "17128188843", name = "Штаны 1", rarity = "Ultimate", type = "Pants"},
@@ -207,7 +231,17 @@ local clothingItems = {
     {id = "9743673456", name = "Штаны 28", rarity = "Mythic", type = "Pants"},
     {id = "12010480457", name = "Штаны 29", rarity = "Mythic", type = "Pants"},
     {id = "13132377517", name = "Штаны 30", rarity = "Mythic", type = "Pants"},
-    {id = "111979865046981", name = "Штаны 31", rarity = "Ultimate", type = "Pants"}
+    {id = "111979865046981", name = "Штаны 31", rarity = "Ultimate", type = "Pants"},
+    {id = "17457609536", name = "Штаны 32", rarity = "Ultimate", type = "Pants"},
+    {id = "1634146300", name = "Штаны 33", rarity = "Ultimate", type = "Pants"},
+    {id = "15079219436", name = "Штаны 34", rarity = "Legendary", type = "Pants"},
+    {id = "104983917305741", name = "Штаны 35", rarity = "Ultimate", type = "Pants"},
+    {id = "15133737240", name = "Штаны 36", rarity = "Ultimate", type = "Pants"},
+    {id = "6531234584", name = "Штаны 37", rarity = "Ultimate", type = "Pants"},
+    {id = "15418844186", name = "Штаны 38", rarity = "Mythic", type = "Pants"},
+    {id = "86336597440159", name = "Штаны 39", rarity = "Ultimate", type = "Pants"},
+    {id = "15703028516", name = "Штаны 40", rarity = "Ultimate", type = "Pants"},
+    {id = "1458712878", name = "Штаны 41", rarity = "Legendary", type = "Pants"}
 }
 
 -- Переменные для состояний
@@ -629,36 +663,143 @@ Tabs.Main:AddButton({
     Callback = clearAllMarkers
 })
 
+-- Кнопка статистики базы
+Tabs.Main:AddButton({
+    Title = "Статистика базы",
+    Description = "Показывает сколько предметов каждой категории",
+    Callback = function()
+        local rarityCount = {}
+        local typeCount = {Shirt = 0, Pants = 0}
+        local idSet = {}
+
+        for _, item in ipairs(clothingItems) do
+            -- Подсчёт по редкости
+            rarityCount[item.rarity] = (rarityCount[item.rarity] or 0) + 1
+
+            -- Подсчёт по типу
+            if item.type == "Shirt" or item.type == "Pants" then
+                typeCount[item.type] = typeCount[item.type] + 1
+            end
+
+            -- Подсчёт уникальных ID
+            idSet[item.id] = true
+        end
+
+        -- Формируем текст
+        local message = "📊 Статистика базы предметов:\n"
+        message = message .. string.format("Всего уникальных ID: %d\n", #table.pack(unpack(table.keys(idSet))))
+        message = message .. string.format("Рубашек: %d\n", typeCount.Shirt)
+        message = message .. string.format("Штанов: %d\n", typeCount.Pants)
+        message = message .. "\nРедкости:\n"
+
+        for rarity, count in pairs(rarityCount) do
+            message = message .. string.format("- %s: %d\n", rarity, count)
+        end
+
+        Window:Dialog({
+            Title = "Статистика базы",
+            Content = message,
+            Buttons = {
+                {
+                    Title = "Ок",
+                    Callback = function() end
+                }
+            }
+        })
+    end
+})
+
+Tabs.Main:AddButton({
+    Title = "Очистить дубликаты",
+    Description = "Удаляет повторяющиеся ID из базы одежды",
+    Callback = function()
+        local seenIds = {}
+        local newTable = {}
+        local removed = 0
+
+        for _, item in ipairs(clothingItems) do
+            if not seenIds[item.id] then
+                seenIds[item.id] = true
+                table.insert(newTable, item)
+            else
+                removed = removed + 1
+            end
+        end
+
+        clothingItems = newTable
+
+        Fluent:Notify({
+            Title = "Дубликаты удалены",
+            Content = string.format("Удалено: %d предметов", removed),
+            Duration = 4
+        })
+    end
+})
+
 Tabs.Players:AddButton({
     Title = "Сканировать игроков",
     Description = "Поиск редкой одежды у всех игроков",
     Callback = scanPlayersClothing
 })
 
-Tabs.Settings:AddToggle("NoclipToggle", {
+Tabs.Game:AddButton({
+    Title = "Удалить двери",
+    Description = "Удаляет все двери в MainTimerForNew",
+    Callback = function()
+        local doorsFolder = workspace:FindFirstChild("MainTimerForNew")
+        if doorsFolder and doorsFolder:FindFirstChild("Doors") then
+            doorsFolder.Doors:Destroy()
+            Fluent:Notify({
+                Title = "Готово",
+                Content = "Двери были удалены.",
+                Duration = 3
+            })
+        else
+            Fluent:Notify({
+                Title = "Ошибка",
+                Content = "Папка Doors не найдена!",
+                Duration = 3
+            })
+        end
+    end
+})
+
+Tabs.Game:AddButton({
+    Title = "Удалить телепорт",
+    Description = "Удаляет tp-парт из MainTimerForNew",
+    Callback = function()
+        local tpPart = workspace:FindFirstChild("MainTimerForNew")
+        if tpPart and tpPart:FindFirstChild("tp") then
+            tpPart.tp:Destroy()
+            Fluent:Notify({
+                Title = "Удалено",
+                Content = "Телепорт парт был удалён.",
+                Duration = 3
+            })
+        else
+            Fluent:Notify({
+                Title = "Ошибка",
+                Content = "tp не найден!",
+                Duration = 3
+            })
+        end
+    end
+})
+
+
+Tabs.Game:AddToggle("NoclipToggle", {
     Title = "Режим Noclip",
     Description = "Позволяет проходить сквозь стены",
     Default = false,
     Callback = toggleNoclip
 })
 
-Tabs.Settings:AddToggle("PerfModeToggle", {
+Tabs.Game:AddToggle("PerfModeToggle", {
     Title = "Режим производительности",
     Description = "Заменяет материалы на SmoothPlastic",
     Default = false,
     Callback = togglePerformanceMode
 })
-
--- Автоматическое обновление Noclip
-game:GetService("RunService").Stepped:Connect(function()
-    if NoclipEnabled and game.Players.LocalPlayer.Character then
-        for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = false
-            end
-        end
-    end
-end)
 
 -- Инициализация
 Window:SelectTab(1)
