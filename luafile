@@ -663,14 +663,13 @@ Tabs.Main:AddButton({
     Callback = clearAllMarkers
 })
 
--- Кнопка статистики базы
+-- Кнопка статистики базы (исправленная)
 Tabs.Main:AddButton({
     Title = "Статистика базы",
     Description = "Показывает сколько предметов каждой категории",
     Callback = function()
         local rarityCount = {}
         local typeCount = {Shirt = 0, Pants = 0}
-        local idSet = {}
 
         for _, item in ipairs(clothingItems) do
             -- Подсчёт по редкости
@@ -680,14 +679,10 @@ Tabs.Main:AddButton({
             if item.type == "Shirt" or item.type == "Pants" then
                 typeCount[item.type] = typeCount[item.type] + 1
             end
-
-            -- Подсчёт уникальных ID
-            idSet[item.id] = true
         end
 
         -- Формируем текст
         local message = "📊 Статистика базы предметов:\n"
-        message = message .. string.format("Всего уникальных ID: %d\n", #table.pack(unpack(table.keys(idSet))))
         message = message .. string.format("Рубашек: %d\n", typeCount.Shirt)
         message = message .. string.format("Штанов: %d\n", typeCount.Pants)
         message = message .. "\nРедкости:\n"
@@ -708,6 +703,7 @@ Tabs.Main:AddButton({
         })
     end
 })
+
 
 Tabs.Main:AddButton({
     Title = "Очистить дубликаты",
@@ -744,7 +740,7 @@ Tabs.Players:AddButton({
 
 Tabs.Game:AddButton({
     Title = "Удалить двери",
-    Description = "Удаляет все двери в MainTimerForNew",
+    Description = "Удаляет все двери",
     Callback = function()
         local doorsFolder = workspace:FindFirstChild("MainTimerForNew")
         if doorsFolder and doorsFolder:FindFirstChild("Doors") then
@@ -766,7 +762,7 @@ Tabs.Game:AddButton({
 
 Tabs.Game:AddButton({
     Title = "Удалить телепорт",
-    Description = "Удаляет tp-парт из MainTimerForNew",
+    Description = "Удаляет tp-парт",
     Callback = function()
         local tpPart = workspace:FindFirstChild("MainTimerForNew")
         if tpPart and tpPart:FindFirstChild("tp") then
